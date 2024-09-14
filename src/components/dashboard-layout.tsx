@@ -19,7 +19,7 @@ import {
   XMarkIcon,
 } from '@heroicons/react/24/outline'
 import { useEffect, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
@@ -35,6 +35,7 @@ function DashboardLayout({ children }: React.PropsWithChildren) {
   const { logout, user } = useAuth0()
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const { pathname } = useLocation()
+  const navigate = useNavigate()
 
   useEffect(() => {
     setSidebarOpen(false)
@@ -235,7 +236,14 @@ function DashboardLayout({ children }: React.PropsWithChildren) {
                     {userNavigation.map((item) => (
                       <MenuItem key={item.name}>
                         <div
-                          onClick={() => logout()}
+                          onClick={() => {
+                            if (item.key === 'logout')
+                              logout({
+                                openUrl() {
+                                  navigate('/')
+                                },
+                              })
+                          }}
                           className="block cursor-pointer px-3 py-1 text-sm leading-6 text-gray-900 data-[focus]:bg-gray-50"
                         >
                           {item.name}
